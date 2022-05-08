@@ -2,7 +2,7 @@
     "id": 1,
     "firstname": "Chainarong",
     "lastname": "Mundee",
-    "position": "Student",
+    "pos": "Student",
     "phone": "0613256758",
     "email": "Chainarong9846@gmail.com"
     }
