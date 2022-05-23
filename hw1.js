@@ -1,87 +1,84 @@
 const express = require('express');
-const parser = require('body-parser');
+const bodyParser = require('body-parser');
 const app = express();
 const port = 6000;
-app.use(parser.urlencoded({ extended: false }));
-app.use(parser.json());
-let user = require('./user.json');
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+let users = require('./user.json');
 
 app.get('/user', function (req, res, next) {
     return res.status(200).json({
         code: 1,
-        message: 'YES',
-        data: user
+        message: 'OK',
+        data: users
     })
 });
 app.post('/user', function (req, res, next) {
 
 
     let user = {}
-    user.id = user.length + 1;
+    user.id = users.length + 1;
     user.firstname = req.body.firstname;
     user.lastname = req.body.lastname;
-    user.pos = req.body.pos;
+    user.position = req.body.position;
     user.phone = req.body.phone;
     user.email = req.body.email;
 
-    console.log('user.length : ', user.length)
-    for (let i = 0; i < user.length; i++) {
+    console.log('users.length : ', users.length)
+    for (let i = 0; i < users.length; i++) {
         console.log('i : ', i)
 
-        if (user[i].phone == user.phone || user[i].email == user.email) {
+        if (users[i].phone == user.phone || users[i].email == user.email) {
             return res.status(400).send('data incorrect');
         }
     }
+    users.push(user);
 
-
-
-    user.push(user);
 
     return res.status(201).json({
         code: 1,
-        message: 'YES',
-        data: user
+        message: 'OK',
+        data: users
     });
 });
 
 app.put('/user/:id', function (req, res, next) {
-    const replace = req.params.id;
-    const pos = user.findIndex(function (val) {
-        return val.id == replace;
+    const replaceId = req.params.id;
+    const position = users.findIndex(function (val) {
+        return val.id == replaceId;
     });
-    console.log(user[pos]);
+    console.log(users[position]);
     if (req.body.firstname || req.body.lastname) {
         res.status(400).send('incorrect');
     }
-
     try {
-        user[pos].pos = req.body.pos;
-        user[pos].phone = req.body.phone;
-        user[pos].email = req.body.email;
-        return res.status(200).json({
+        users[position].position = req.body.position;
+        users[position].phone = req.body.phone;
+        users[position].email = req.body.email;
+        res.status(200).json({
             code: 1,
-            message: 'YES',
-            data: user
+            message: 'OK',
+            data: users
         });
     } catch (error) {
-        res.status(400).send('incorrect');
+        return res.status(400).send('data incorrect');
     }
 })
 
 app.delete('/user/:id', function (req, res, next) {
-    const remove = req.params.id;
+    const removeId = req.params.id;
     try {
-        const pos = user.findIndex((val) => {
-            return val.id == remove;
+        const position = users.findIndex((val) => {
+            return val.id == removeId;
         });
-        user.splice(pos, 1);
+        users.splice(position, 1);
         return res.status(200).json({
             code: 1,
-            message: 'YES',
-            data: user
+            message: 'OK',
+            data: users
         })
     } catch (error) {
-        res.status(400).send('incorrect');
+        res.status(400).send('data incorrect');
     }
 })
 
